@@ -1,0 +1,1980 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>*@
+<head>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+
+<style>
+    /* Style the Image Used to Trigger the Modal */
+    #myImg {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #myImg:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    /*.modal {
+        display: none;*/ /* Hidden by default */
+    /*position: fixed;*/ /* Stay in place */
+    /*z-index: 5;*/ /* Sit on top */
+    /*padding-top: 100px;*/ /* Location of the box */
+    /*left: 0;
+        top: 0;
+        width: 100%;*/ /* Full width */
+    /*height: 100%;*/ /* Full height */
+    /*overflow: auto;*/ /* Enable scroll if needed */
+    /*background-color: rgb(255, 255, 255);  //Fallback color*/
+    /*background-color: rgba(0,0,0,0.9);*/ /* Black w/ opacity */
+    /*}*/
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+        /* color: #ccc;*/
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    @@keyframes zoom {
+        from {
+            transform: scale(0)
+        }
+
+        to {
+            transform: scale(1)
+        }
+    }
+
+    /* The Close Button */
+    /*    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }*/
+
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* 100% Image Width on Smaller Screens */
+    @@media only screen and (max-width: 400px) {
+        .modal-content {
+            width: 100%;
+        }
+    }
+
+    .ActiveTab {
+        background-color: blue;
+        color: white;
+    }
+
+    .InActiveTab {
+        background-color: lightgray;
+        color: black;
+    }
+</style>
+<div class="row">
+    <br />
+    <div id="markers"></div>
+    <div class="col-md-3">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="non-metering-tab" data-toggle="tab" href="#non-metering" role="tab" aria-controls="non-metering" aria-selected="false">Non-Metering</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="metering-tab" data-toggle="tab" href="#metering" role="tab" aria-controls="metering" aria-selected="false">Metering</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                <h4>All</h4>
+                <h4>Job Order | Job Activity</h4>
+
+                <div>
+                    <label>
+                        Search <input type="text" id="Search" onkeyup="myFunctionAll()" placeholder="Search" class="form-control col-md-3">
+                    </label>
+                </div>
+                <div style="overflow: auto; border: dotted 1px gray; ">
+                    <div style="height: 280px; border: dotted 1px gray; width:400px;">
+                        <table style="width: 400px;" class="table table-bordered table-striped" id="tblJA">
+                            <thead>
+                                <tr class="header"><th style="width: 40px;">Ja&nbsp;Id</th><th style="width: 40px;">Jo&nbsp;Number</th><th style="width: 320px;">Ja Number</th></tr>
+                            </thead>
+                            @{
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr style="cursor: pointer;"><td>@item.jaId</td><td>@item.joId</td><td style="width: 320px;">@item.jaNumber</td></tr>
+                                    }
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="non-metering" role="tabpanel" aria-labelledby="non-metering-tab">
+                <h4>Non-Metering</h4>
+                <h4>Job Order | Job Activity</h4>
+                <div>
+                    <label>
+                        Search <input type="text" id="SearchNonMetering" onkeyup="myFunctionNonMetering()" placeholder="Search" class="form-control col-md-3">
+                    </label>
+                </div>
+                <div style="overflow: auto; border: dotted 1px gray; ">
+                    <div style="height: 280px; border: dotted 1px gray; width:400px;">
+                        <table style="width: 400px;" class="table table-bordered table-striped" id="tblJA_NonMetering">
+                            <thead>
+                                <tr class="header"><th style="width: 40px;">Ja&nbsp;Id</th><th style="width: 40px;">Jo&nbsp;Number</th><th style="width: 320px;">Ja Number</th></tr>
+                            </thead>
+                            @{
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        if (!item.jaId.Contains("JA"))
+                                        {
+                                            <tr style="cursor: pointer;"><td>@item.jaId</td><td>@item.joId</td><td style="width: 320px;">@item.jaNumber</td></tr>
+                                        }
+
+                                    }
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="metering" role="tabpanel" aria-labelledby="metering-tab">
+                <h4>Metering</h4>
+                <h4>Job Order | Job Activity</h4>
+                <div>
+                    <label>
+                        Search <input type="text" id="SearchMetering" onkeyup="myFunctionMetering()" placeholder="Search" class="form-control col-md-3">
+                    </label>
+                </div>
+                <div style="overflow: auto; border: dotted 1px gray; ">
+                    <div style="height: 280px; border: dotted 1px gray; width:400px;">
+                        <table style="width: 400px;" class="table table-bordered table-striped" id="tblJA_Metering">
+                            <thead>
+                                <tr class="header"><th style="width: 40px;">Ja&nbsp;Id</th><th style="width: 40px;">Jo&nbsp;Number</th><th style="width: 320px;">Ja Number</th></tr>
+                            </thead>
+                            @{
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        if (item.jaId.Contains("JA"))
+                                        {
+                                            <tr style="cursor: pointer;"><td>@item.jaId</td><td>@item.joId</td><td style="width: 320px;">@item.jaNumber</td></tr>
+                                        }
+
+                                    }
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <div style="height: 290px; padding: 5px 0px 5px 0px;">
+
+            <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="node-tab" data-toggle="tab" href="#nodes" role="tab" aria-controls="nodes" aria-selected="true">Nodes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="sgg-tab" data-toggle="tab" href="#sgg" role="tab" aria-controls="sgg" aria-selected="false">Seg Groups</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="eqpt-tab" data-toggle="tab" href="#equipments" role="tab" aria-controls="eqpt" aria-selected="false">Eqpt</a>
+                </li>
+            </ul>
+
+
+
+            @*<table style="width: 100%;"><tr><td><input type="button" id="btnNodes" value="Nodes" class="btn btn-danger" style="width: 100%;" /></td><td>&nbsp;&nbsp;</td><td><input type="button" value="Segment Groups" id="btnSegmentGroup" class="btn btn-danger" style="width: 100%;" /></td></tr></table>*@
+
+       
+            <div class="tab-content" id="myTabContent2">
+                <br/>
+                <div class="tab-pane fade show active" id="nodes" role="tabpanel" aria-labelledby="nodes">
+                    <div>
+                        <label>
+                            List of Nodes
+                        </label>
+                        <input type="text" id="SearchNode" onkeyup="myFunctionNode()" placeholder="Search" class="form-control col-md-3">
+                    </div>
+
+                    <div id="divListNodesSegments" style="border: 1px dotted gray; overflow: auto; height:165px;">
+                        <table id="tblListNodes" class="table table-bordered table-striped">
+                            <tr><td>Node&nbsp;Id</td><td>Temp&nbsp;Tag</td><td>Lat</td><td>Long</td><td>Pole&nbsp;Number/Marker</td></tr>
+                            <tbody id="tblListNodeBody">
+                            </tbody>
+                        </table>
+
+
+                        @*<table id="tblListSegments" class="table table-bordered table-striped">
+                 <tr><td>Segment&nbsp;Id</td><td>NodeId&nbsp;From</td><td>NodeId&nbsp;To</td><td>Sag&nbsp;Percent</td></tr>
+                 <tbody id="tblListSegmentBody">
+                 </tbody>
+                </table>*@
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="sgg" role="tabpanel" aria-labelledby="sgg-tab">
+                    <div>
+                        <label>
+                            List of Segment Groups
+                        </label>
+                        <input type="text" id="SearchSGG" onkeyup="myFunctionSGG()" placeholder="Search" class="form-control col-md-3">
+                    </div>
+                    <div style="border: 1px dotted gray; overflow: auto; height:165px;">
+                        <table id="tblListSegmentGroups" class="table table-bordered table-striped">
+                            <tr><td>SGG&nbsp;Id</td><td>Segment&nbsp;From</td><td>Segment&nbsp;To</td><td>Actual&nbsp;Wire&nbsp;Length</td><td>CuTransId</td></tr>
+                            <tbody id="tblListSegmentGroupBody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="equipments" role="tabpanel" aria-labelledby="eqpt-tab">
+                    <div>
+                        <label>
+                            List of Equipments
+                        </label>
+                        <input type="text" id="SearchEQPT" onkeyup="myFunctionEqpt()" placeholder="Search" class="form-control col-md-3">
+                    </div>
+                    <div style="border: 1px dotted gray; overflow: auto; height:165px;">
+                        <table id="tblListEqpt" class="table table-bordered table-striped">
+                            <tr><td>Eqpt&nbsp;Id</td><td>Eqpt&nbsp;Type</td><td>NodeID</td><td>SggID</td></tr>
+                            <tbody id="tblListEqptBody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        
+        </div>
+        </div>
+
+
+    <div class="col-md-9" style="justify-content:center">
+        <h4><span id="spnJO">JO Number: --- </span>&nbsp;&nbsp;<span id="spnJANum">JA Number: --- </span>&nbsp;&nbsp;<span id="spnNode">Node: --- </span>&nbsp;&nbsp;</h4>
+        <div id="map" style="max-width: 850px; max-height: 725px; height: 725px; border: 1px solid #CCC;"> </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <br/>
+        <div style="height:300px;">
+            <div>
+                <label>CU Transactions</label>
+            </div>
+
+
+            <div id="divCuTrans" style="overflow: auto; height: 200px; border: dotted 1px gray; font-size: 10px;">
+                <table id="tblCuTrans" class="table table-bordered table-striped">
+                    <tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td>&nbsp;</td></tr>
+                    <tbody id="tblCuTransBody">
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-9">
+        <h4>Photos</h4>
+        <div id="divPhotos"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>Mat Transactions</h4>
+        <div style="overflow: auto; height: 300px;">
+            <div id="divMatTrans"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="divlogs" style="display: none;"></div>
+
+
+<div class="modal fade" id="GeniusPhoto" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Modal heading -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <!-- Modal body with image -->
+            <div class="modal-body" style="text-align:center;">
+                <img id="PhotoID" src="~/Content/images/loadingenius.gif" style="width:95%;" />
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" name="close" data-bs-dismiss="modal" aria-label="Close" class="btn btn-xs btn-primary " id="btnClosePhotoView">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+
+    var gmarkers = [];
+    var marker;
+
+    var directionsService;
+    var directionsDisplay;
+
+    var map;
+
+    let polyline;
+
+
+    $(document).ready(function () {
+        $('#myTab  a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');          
+        });
+
+        $('#myTab2  a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+
+        setTimeout(function () { nav_all(); }, 500);
+        setTimeout(function () { nav_node(); }, 500);
+
+    });
+
+
+    function nav_all() {
+        $('#all-tab').click();
+    }
+
+    function nav_node() {
+        $('#node-tab').click();
+    }
+
+    //$(function () {
+    //    $('#all-tab').click();
+    //});
+
+    function initMap() {
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer;
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: { lat: 10.527236, lng: 124.028277 }
+        });
+
+
+        directionsDisplay.setMap(map);
+
+        var geocoder = new google.maps.Geocoder;
+        var infowindow = new google.maps.InfoWindow;
+
+
+        polyline = new google.maps.Polyline({
+            path: [],
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            clickable: true
+        });
+
+        polyline.setMap(map);
+
+        //document.getElementById('submit').addEventListener('click', function () {
+        //    geocodeLatLng(geocoder, map, infowindow);
+        //});
+
+        //document.getElementById('btnPlot').addEventListener('click', function () {
+        //    //calculateAndDisplayRoute(directionsService, directionsDisplay, map);
+        //    PlotCoordinates(directionsService, directionsDisplay, map);
+        //});
+
+
+        //document.getElementById('btnRemoveMarker').addEventListener('click', function () {
+        //    //marker.setVisible(false); // visible_changed triggered
+        //    //marker.setMap(null);      // visible_changed not triggered
+
+        //    for (var i = 0; i < gmarkers.length; i++) {
+        //        gmarkers[i].setMap(null);
+        //    }
+
+        //    gmarkers = [];
+
+        //    directionsDisplay.setMap(null);
+
+        //    var summaryPanel = document.getElementById('directions-panel');
+        //    summaryPanel.innerHTML = '';
+
+        //    $("input[name='chkCoordinates']").prop('checked', false);
+
+
+
+
+        //});
+
+
+
+        //document.getElementById('btnAddMarker').addEventListener('click', function () {
+        //    var latlng = new google.maps.LatLng(10.354693, 123.920901);
+
+        //    marker = new google.maps.Marker({
+        //        position: latlng,
+        //        map: map
+        //    });
+
+
+
+        //    directionsDisplay.setMap(null);
+        //    marker.setVisible(true);  // visible_changed triggered
+
+
+        //});
+
+
+
+        $('#tblJA tr').click(function () {
+            //Nodes
+            var jaIDTemp = $('#tblJA tr:nth-child(' + this.rowIndex + ') td:nth-child(1)').text();
+            var jaID = jaIDTemp.replace("Ja Id", "");
+
+            var joNumTemp = $('#tblJA tr:nth-child(' + this.rowIndex + ') td:nth-child(2)').text();
+            var joNum = joNumTemp.replace("Jo Number", "");
+
+            var jaNumTemp = $('#tblJA tr:nth-child(' + this.rowIndex + ') td:nth-child(3)').text();
+            var jaNum = jaNumTemp.replace("Ja Number", "");
+
+            //alert(jaID);
+
+            var latlong = [];
+            var latlong_temp = [];
+            var coor = "";
+            var Node_htmls = "";
+            var Eqpt_htmls = "";
+
+
+            $('#tblListNodeBody').html('');
+            $.ajax({
+                url: 'Home/GetNodesWithNodeType',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            latlong.push(coor);
+                            latlong_temp.push(coor)
+                            var pole = "";
+                            var manhole = "";
+
+                            if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisNodesInMap(\'' + latlong_temp + '\');"><td>' + b.node.nodeId + '</td><td style="width: auto;">' + b.node.tempNodeTag + '</td><td>' + b.node.latitude + '</td><td>' + b.node.longitude + '<td>' + pole + " " + manhole + '</td></td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListNodeBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+            //Segments
+
+            $('#tblListSegmentGroupBody').html('');
+            $.ajax({
+                url: 'Home/GetSegmentGroup',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.ssgId + '\');"><td>' + b.ssgId + '</td><td style="width: auto;">' + b.segmentIdStart + '</td><td>' + b.segmentIdStartNeg + '</td><td>' + b.actualWireLength + '<td>' + b.cuTransId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListSegmentGroupBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+            //Eqpt
+            $('#tblListEqptBody').html('');
+            $.ajax({
+                url: 'Home/GetEquipmentByJaID',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Eqpt_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Eqpt_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.equipment.eqptId + '\');"><td>' + b.equipment.eqptId + '</td><td>' + b.equipment.eqptType + '</td><td>' + b.equipment.nodeId + '</td><td>' + b.equipment.sggId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        //$('#divPhotos').html('');
+                        //$('#divMatTrans').html('');
+                        //$('#spnJO').text("JO Number: " + joNum);
+                        //$('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListEqptBody').append(Eqpt_htmls);
+
+
+                        $('#SearchEqpt').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Equipment!"); }, 100);
+
+                    }
+                }
+            });
+        });
+
+        $('#tblJA_NonMetering tr').click(function () {
+            //Nodes
+            var jaIDTemp = $('#tblJA_NonMetering tr:nth-child(' + this.rowIndex + ') td:nth-child(1)').text();
+            var jaID = jaIDTemp.replace("Ja Id", "");
+
+            var joNumTemp = $('#tblJA_NonMetering tr:nth-child(' + this.rowIndex + ') td:nth-child(2)').text();
+            var joNum = joNumTemp.replace("Jo Number", "");
+
+            var jaNumTemp = $('#tblJA_NonMetering tr:nth-child(' + this.rowIndex + ') td:nth-child(3)').text();
+            var jaNum = jaNumTemp.replace("Ja Number", "");
+
+            //alert(jaID);
+
+            var latlong = [];
+            var latlong_temp = [];
+            var coor = "";
+            var Node_htmls = "";
+            var Eqpt_htmls = "";
+
+            $('#tblListNodeBody').html('');
+            $.ajax({
+                url: 'Home/GetNodesWithNodeType',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            latlong.push(coor);
+                            latlong_temp.push(coor)
+                            var pole = "";
+                            var manhole = "";
+
+                            if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisNodesInMap(\'' + latlong_temp + '\');"><td>' + b.node.nodeId + '</td><td style="width: auto;">' + b.node.tempNodeTag + '</td><td>' + b.node.latitude + '</td><td>' + b.node.longitude + '<td>' + pole + " " + manhole + '</td></td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListNodeBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+            //Segments
+
+            $('#tblListSegmentGroupBody').html('');
+            $.ajax({
+                url: 'Home/GetSegmentGroup',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.ssgId + '\');"><td>' + b.ssgId + '</td><td style="width: auto;">' + b.segmentIdStart + '</td><td>' + b.segmentIdStartNeg + '</td><td>' + b.actualWireLength + '<td>' + b.cuTransId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListSegmentGroupBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+
+            //Eqpt
+            $('#tblListEqptBody').html('');
+            $.ajax({
+                url: 'Home/GetEquipmentByJaID',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Eqpt_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Eqpt_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.equipment.eqptId + '\');"><td>' + b.equipment.eqptId + '</td><td>' + b.equipment.eqptType + '</td><td>' + b.equipment.nodeId + '</td><td>' + b.equipment.sggId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        //$('#divPhotos').html('');
+                        //$('#divMatTrans').html('');
+                        //$('#spnJO').text("JO Number: " + joNum);
+                        //$('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListEqptBody').append(Eqpt_htmls);
+
+
+                        $('#SearchEqpt').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Equipment!"); }, 100);
+
+                    }
+                }
+            });
+
+        });
+
+        $('#tblJA_Metering tr').click(function () {
+            //Nodes
+            var jaIDTemp = $('#tblJA_Metering tr:nth-child(' + this.rowIndex + ') td:nth-child(1)').text();
+            var jaID = jaIDTemp.replace("Ja Id", "");
+
+            var joNumTemp = $('#tblJA_Metering tr:nth-child(' + this.rowIndex + ') td:nth-child(2)').text();
+            var joNum = joNumTemp.replace("Jo Number", "");
+
+            var jaNumTemp = $('#tblJA_Metering tr:nth-child(' + this.rowIndex + ') td:nth-child(3)').text();
+            var jaNum = jaNumTemp.replace("Ja Number", "");
+
+            //alert(jaID);
+
+            var latlong = [];
+            var latlong_temp = [];
+            var coor = "";
+            var Node_htmls = "";
+            var Eqpt_htmls = "";
+
+            $('#tblListNodeBody').html('');
+            $.ajax({
+                url: 'Home/GetNodesWithNodeType',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            latlong.push(coor);
+                            latlong_temp.push(coor)
+                            var pole = "";
+                            var manhole = "";
+
+                            if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisNodesInMap(\'' + latlong_temp + '\');"><td>' + b.node.nodeId + '</td><td style="width: auto;">' + b.node.tempNodeTag + '</td><td>' + b.node.latitude + '</td><td>' + b.node.longitude + '<td>' + pole + " " + manhole + '</td></td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListNodeBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+            //Segments
+
+            $('#tblListSegmentGroupBody').html('');
+            $.ajax({
+                url: 'Home/GetSegmentGroup',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+                    //alert(data);
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Node_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Node_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.ssgId + '\');"><td>' + b.ssgId + '</td><td style="width: auto;">' + b.segmentIdStart + '</td><td>' + b.segmentIdStartNeg + '</td><td>' + b.actualWireLength + '<td>' + b.cuTransId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        $('#divPhotos').html('');
+                        $('#divMatTrans').html('');
+                        $('#spnJO').text("JO Number: " + joNum);
+                        $('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListSegmentGroupBody').append(Node_htmls);
+
+
+                        $('#SearchNode').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                    }
+                }
+            });
+
+            //Eqpt
+            $('#tblListEqptBody').html('');
+            $.ajax({
+                url: 'Home/GetEquipmentByJaID',
+                type: "get",
+                data: { jaID: jaID },
+                async: true,
+                success: function (data) {
+               
+                    if (data != "") {
+                        //Node_htmls = '<table id="tblListNodes" class="table table-bordered table-striped"><tr><td>Node&nbsp;Id</td><td style="width: auto;">Temp&nbsp;Tag</td><td>Lat</td><td>Long</td></tr>';
+                        Eqpt_htmls = "";
+                        var finalData = JSON.parse(data); //data.replace(/\\/g, "");
+
+                        $.each(finalData, function (a, b) {
+
+                            //coor = b.node.nodeId + "," + b.node.tempNodeTag + "," + b.node.latitude + "-" + b.node.longitude;
+                            // latlong.push(coor);
+                            //latlong_temp.push(coor)
+                            //var pole = "";
+                            //var manhole = "";
+
+                            //if (b.pole == null) { pole = ""; } else { pole = b.pole.poleNumber; }
+                            //if (b.manhole == null) { manhole = ""; } else { manhole = b.manhole.marker; }
+
+                            Eqpt_htmls += '<tr style="cursor:pointer;" onclick="ViewThisSegmentGroupInMap(\'' + b.equipment.eqptId + '\');"><td>' + b.equipment.eqptId + '</td><td>' + b.equipment.eqptType + '</td><td>' + b.equipment.nodeId + '</td><td>' + b.equipment.sggId + '</td></tr>';
+                            latlong_temp = [];
+                        });
+
+
+                        //alert(coor);
+                        //alert(latlong.toString());
+                        //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                        //$('#divCuTrans').html('');
+                        //$('#divPhotos').html('');
+                        //$('#divMatTrans').html('');
+                        //$('#spnJO').text("JO Number: " + joNum);
+                        //$('#spnJANum').text("JA Number: " + jaNum);
+                        //$('#divListNodes').append(Node_htmls);
+                        $('#tblListEqptBody').append(Eqpt_htmls);
+
+
+                        $('#SearchEqpt').val('');
+                        ShowHideMarker(directionsDisplay, map, latlong);
+                    } else {
+                        //Clear MAP
+                        for (var i = 0; i < gmarkers.length; i++) {
+                            gmarkers[i].setMap(null);
+                        }
+
+                        setTimeout(function () { alert("No Available Equipment!"); }, 100);
+
+                    }
+                }
+            });
+
+
+           
+        });
+
+
+
+        setTimeout(function () {
+            // alert('page is loaded and 1 minute has passed');
+
+            var aTags = document.getElementsByClassName('chk');
+
+            for (var i = 0; i < aTags.length; i++) {
+                aTags[i].addEventListener('click', function () {
+                    //ShowHideMarker(directionsDisplay, map, latlong);
+                });
+            }
+
+            //PlotCoordinates(directionsService, directionsDisplay, map);
+            //ShowHideMarker(directionsDisplay, map, latlong);
+
+        }, 2000);
+    }
+
+
+    function myFunctionAll() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;;
+        input = document.getElementById("Search");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblJA");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the        search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+    function myFunctionNonMetering() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;;
+        input = document.getElementById("SearchNonMetering");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblJA_NonMetering");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the        search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+    function myFunctionMetering() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;;
+        input = document.getElementById("SearchMetering");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblJA_Metering");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the        search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+
+    function myFunctionNode() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;;
+        input = document.getElementById("SearchNode");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblListNodes");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the        search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+    //function PlotCoordinates(directionsService, directionsDisplay, map, coor_arr) {
+
+    //    //var coor = [];
+    //    //$.each($("input[name='chkCoordinates']:checked"), function () {
+    //    //    coor.push($(this).val());
+    //    //});
+
+    //    //alert("Coordinates are: " + coor_arr.join(", "));
+
+    //    //alert(coor_arr);
+    //    for (var i = 0; i < gmarkers.length; i++) {
+    //        gmarkers[i].setMap(null);
+    //    }
+
+    //    gmarkers = [];
+    //    newLatLng = [];
+
+    //    var bounds;
+    //    var loc;
+
+    //    //alert(coor_arr.length);
+
+    //    for (var i = 0; i < coor_arr.length; i++) {
+    //        //var coortemp = coor_arr[i].split(',');
+    //        var coortemp = "Nodes";
+    //        var coordinates = coor_arr[i].split(',');
+    //        var long = coordinates[0];
+    //        var lat = coordinates[1];
+
+    //        //alert(lat + "=" + long);
+
+    //        var latlng = new google.maps.LatLng(lat, long);
+    //        directionsDisplay.setMap(null);
+
+    //        var markers = new google.maps.Marker({
+    //            position: latlng,
+    //            map: map,
+    //            title: coortemp[1] + " " + latlng.toString(),
+    //            icon: new google.maps.MarkerImage('/Content/images/mark_orange.png')
+    //        });
+
+    //        //bounds = new google.maps.LatLngBounds();
+    //        //loc = new google.maps.LatLng(lat, long);
+
+    //        gmarkers.push(markers);
+    //        newLatLng.push(lat + "," + long);
+
+    //        //alert(gmarkers.toString()   + " = " + newLatLng.toString());
+    //    }
+
+    //    //for (var i = 0; i < gmarkers.length; i++) {
+    //    //    gmarkers[i].setMap(map);
+    //    //    bounds.extend(gmarkers[i].getPosition());
+    //    //}
+
+
+    //    //bounds.extend(loc);
+
+    //    //map.fitBounds(bounds);
+    //    //map.panToBounds(bounds);
+
+    //    //alert(newLatLng[0]);
+    //    //alert(newLatLng[newLatLng.length - 1]);
+    //    var waypts = [];
+    //    var start = newLatLng[0];
+    //    var end = newLatLng[newLatLng.length - 1];
+    //    var checkboxArray = newLatLng;
+
+
+    //    for (var i = 0; i < checkboxArray.length; i++) {
+    //        //window.alert(checkboxArray[i]);
+    //        waypts.push({
+    //            location: checkboxArray[i],
+    //            stopover: true
+    //        });
+    //    }
+
+    //    directionsDisplay.setMap(map);
+
+    //    //directionsService.route({
+    //    //    origin: start,
+    //    //    destination: end,
+    //    //    waypoints: waypts,
+    //    //    optimizeWaypoints: true,
+    //    //    travelMode: 'DRIVING'
+    //    //}, function (response, status) {
+    //    //    if (status === 'OK') {
+
+    //    //        directionsDisplay.setDirections(response);
+
+    //    //        //map.setZoom(11);
+    //    //        var route = response.routes[0];
+    //    //        var summaryPanel = document.getElementById('directions-panel');
+    //    //        summaryPanel.innerHTML = '';
+    //    //        // For each route, display summary information.
+    //    //        for (var i = 0; i < route.legs.length; i++) {
+    //    //            var routeSegment = i + 1;
+    //    //            summaryPanel.innerHTML += '<b>Pole: ' + routeSegment + '</b><br>';
+    //    //            summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+    //    //            summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+    //    //            summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+
+    //    //        }
+    //    //    } else {
+    //    //        window.alert('Directions request failed due to ' + status);
+    //    //    }
+    //    //});
+    //}
+
+    function ShowHideMarker(display, map, coor_arr) {
+
+        var markers = new Array();
+        var htmls = "";
+
+        if (polyline != null) {
+            polyline.setMap(null);
+            polyline = null;
+        }
+
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(null);
+        }
+
+        gmarkers = [];
+
+        var bounds;
+        var loc;
+        var infowindow = new google.maps.InfoWindow();
+        var nodeIDarr = [];
+        var TempTagarr = [];
+        var latlong = [];
+
+        for (var i = 0; i < coor_arr.length; i++) {
+            var coortemp = coor_arr[i].split(',');
+            var coordinates = coortemp[2].split('-');
+            var lat = coordinates[0];
+            var long = coordinates[1];
+
+            var latlng = new google.maps.LatLng(lat, long);
+
+            nodeIDarr.push(coortemp[0]);
+            TempTagarr.push(coortemp[1]);
+            latlong.push(latlng.toString());
+            //$('#markers').append('<a class="marker-link" data-markerid="' + i + '" href="#">Test-' + i + '</a> ');
+            //directionsDisplay.setMap(null);
+
+
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: coortemp[0] + "\n" + coortemp[1] + "\n" + latlng.toString(),
+                icon: new google.maps.MarkerImage('Content/images/genius_marker2.png')
+            });
+
+
+
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+                return function () {
+
+
+                    infowindow.setContent(nodeIDarr[i] + "<br/>" + TempTagarr[i] + "<br/>" + latlong[i]);
+                    infowindow.open(map, marker);
+
+                    //$('#divCuTrans').html('');
+                    $('#divPhotos').html('');
+                    $('#divMatTrans').html('');
+                    $('#tblCuTransBody').html('');
+
+                    htmls = "";
+
+
+
+                    //Get CU
+                    $.ajax({
+                        url: "Home/GetCU",
+                        type: "get",
+                        async: "true",
+                        data: { nodeId: nodeIDarr[i] },
+                        success: function (data) {
+                            if (data != null) {
+                                //htmls += '<table class="table table-bordered table-striped"><tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td></td></tr>';
+                                $.each(data, function (a, b) {
+                                    //alert("here1: " + b.dtRemoved);
+                                    if (b.dtRemoved == null) {
+                                        htmls += '<tr><td>' + b.cuTransId + '</td><td style="width:250px;">' + b.cuId + '</td><td style="width:250px;">' + b.cuId.substring(0, (b.cuId.length - 2)) + '</td><td title="View Details" style="cursor:pointer; color: blue; width: 300px;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+
+                                    }
+
+
+                                });
+
+                                viewNodeId(nodeIDarr[i], TempTagarr[i]);
+                            }
+
+                            //htmls += "</table>";
+                            $('#tblCuTransBody').append(htmls);
+                        }
+                    });
+
+                }
+
+            })(marker, i));
+            markers.push(marker);
+
+
+            bounds = new google.maps.LatLngBounds();
+            loc = new google.maps.LatLng(lat, long);
+
+            gmarkers.push(marker);
+        }
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(map);
+            bounds.extend(gmarkers[i].getPosition());
+        }
+
+
+        if (gmarkers.length > 0) {
+            bounds.extend(loc);
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+        }
+
+
+
+
+    }
+
+    function ShowHideMarkerOneNode(display, map, coor_arr) {
+
+        var markers = new Array();
+        var htmls = "";
+
+        //polyline = new google.maps.Polyline({
+        //    path: [],
+        //    strokeColor: '#FF0000',
+        //    strokeOpacity: 1.0,
+        //    strokeWeight: 2,
+        //    clickable: true
+        //});
+
+        if (polyline != null) {
+            polyline.setMap(null);
+            polyline = null;
+        }
+
+
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(null);
+        }
+
+        gmarkers = [];
+
+        var bounds;
+        var loc;
+        var infowindow = new google.maps.InfoWindow();
+        var nodeIDarr = [];
+        var TempTagarr = [];
+        var latlong = [];
+
+
+
+        var coortemp = coor_arr.split(',');
+        var coordinates = coortemp[2].split('-');
+
+        var lat = coordinates[0];
+        var long = coordinates[1];
+
+
+        $('#spnNode').text("Node: " + coortemp[0] + "(" + coortemp[1] + ")");
+        var latlng = new google.maps.LatLng(lat, long);
+
+        nodeIDarr.push(coortemp[0]);
+        TempTagarr.push(coortemp[1]);
+        latlong.push(latlng.toString());
+        //$('#markers').append('<a class="marker-link" data-markerid="' + i + '" href="#">Test-' + i + '</a> ');
+        //directionsDisplay.setMap(null);
+
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: coortemp[0] + "\n" + coortemp[1] + "\n" + latlng.toString(),
+            icon: new google.maps.MarkerImage('Content/images/genius_marker2.png')
+        });
+
+
+
+
+        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+            return function () {
+
+
+                infowindow.setContent(coortemp[0] + "<br/>" + coortemp[1] + "<br/>" + latlong);
+                infowindow.open(map, marker);
+
+                //$('#divCuTrans').html('');
+                $('#divPhotos').html('');
+                $('#divMatTrans').html('');
+                $('#tblCuTransBody').html('');
+
+                htmls = "";
+
+                //Get CU
+                $.ajax({
+                    url: "Home/GetCU",
+                    type: "get",
+                    async: "true",
+                    data: { nodeId: coortemp[0] },
+                    success: function (data) {
+                        if (data != null) {
+                            //htmls += '<table class="table table-bordered table-striped"><tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td></td></tr>';
+                            $.each(data, function (a, b) {
+                                //alert("here: " + b.dtRemoved);
+                                if (b.dtRemoved == null) {
+                                    htmls += '<tr><td>' + b.cuTransId + '</td><td style="width:250px;">' + b.cuId + '</td><td style="width:250px;">' + b.cuId.substring(0, (b.cuId.length - 2)) + '</td><td title="View Details" style="cursor:pointer; color: blue; width: 300px;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+
+                                }
+
+                            });
+                        }
+
+                        //htmls += "</table>";
+                        $('#tblCuTransBody').append(htmls);
+                    }
+                });
+
+            }
+
+        })(marker, i));
+        markers.push(marker);
+
+
+        bounds = new google.maps.LatLngBounds();
+        loc = new google.maps.LatLng(lat, long);
+
+        gmarkers.push(marker);
+
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(map);
+            bounds.extend(gmarkers[i].getPosition());
+        }
+
+
+        if (gmarkers.length > 0) {
+            bounds.extend(loc);
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+        }
+
+
+
+        ViewCUs(coortemp[0]);
+
+    }
+
+
+    function ShowSegmentsBySegmentGroupId(display, map, coor_arr, sgg_id) {
+
+
+        //alert(sgg_id + "=" + coor_arr);
+
+
+        var markers = new Array();
+        var htmls = "";
+
+
+        if (polyline != null) {
+            polyline.setMap(null);
+            polyline = null;
+        }
+
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(null);
+        }
+
+        gmarkers = [];
+
+        var bounds;
+        var loc;
+        var infowindow = new google.maps.InfoWindow();
+        var nodeIDarr = [];
+        var TempTagarr = [];
+        var latlong = [];
+
+        var coordinates = [];
+
+        for (var i = 0; i < coor_arr.length; i++) {
+            var coorTemp = coor_arr[i].split(',');
+            var segmentId = coorTemp[0];
+            var nodeIdFrom = coorTemp[1];
+            var nodeIdTo = coorTemp[2];
+            var sagPercent = coorTemp[3];
+            var lat = coorTemp[4];
+            var long = coorTemp[5];
+
+            //alert(lat + "=" + long);
+
+
+
+            var latlng = new google.maps.LatLng(lat, long);
+            var segmentCoor = { lat: parseFloat(lat), lng: parseFloat(long) };
+            coordinates.push(segmentCoor);
+
+            //alert(coordinates);
+
+            nodeIDarr.push(coorTemp[0]);
+            //TempTagarr.push(coortemp[1]);
+            latlong.push(latlng.toString());
+            //$('#markers').append('<a class="marker-link" data-markerid="' + i + '" href="#">Test-' + i + '</a> ');
+            //directionsDisplay.setMap(null);
+
+
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: segmentId + "\n" + nodeIdFrom + "-" + nodeIdTo + "\n" + latlng.toString(),
+                icon: new google.maps.MarkerImage('Content/images/genius_marker2.png')
+            });
+
+
+
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+                return function () {
+
+
+                    //infowindow.setContent(nodeIDarr[i] + "<br/>" + TempTagarr[i] + "<br/>" + latlong[i]);
+                    //infowindow.setContent("<strong>SGG_ID: " + sgg_id + "</strong><br/>" + "<strong>Segment ID:" + segmentId + " (" + nodeIdFrom + "-" + nodeIdTo + ")</strong><br/>" + latlong[i]);
+                    infowindow.setContent("<strong>SGG_ID: " + sgg_id + "</strong><br/>" + "<strong><br/>" + latlong[i]);
+
+
+                    infowindow.open(map, marker);
+
+                    //$('#divCuTrans').html('');
+                    $('#divPhotos').html('');
+                    $('#divMatTrans').html('');
+                    $('#tblCuTransBody').html('');
+
+                    htmls = "";
+
+
+
+                    //Get CU
+                    $.ajax({
+                        url: "Home/GetCU",
+                        type: "get",
+                        async: "true",
+                        data: { nodeId: sgg_id },
+                        success: function (data) {
+                            if (data != null) {
+                                //htmls += '<table class="table table-bordered table-striped"><tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td></td></tr>';
+                                $.each(data, function (a, b) {
+                                    //alert("here1: " + b.dtRemoved);
+                                    if (b.dtRemoved == null) {
+                                        htmls += '<tr><td>' + b.cuTransId + '</td><td style="width:250px;">' + b.cuId + '</td><td style="width:250px;">' + b.cuId.substring(0, (b.cuId.length - 2)) + '</td><td title="View Details" style="cursor:pointer; color: blue; width: 300px;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+
+                                    }
+
+
+                                });
+
+                                //viewNodeId(nodeIDarr[i], TempTagarr[i]);
+                            }
+
+                            //htmls += "</table>";
+                            $('#tblCuTransBody').append(htmls);
+                        }
+                    });
+
+                }
+
+            })(marker, i));
+            markers.push(marker);
+
+
+            bounds = new google.maps.LatLngBounds();
+            loc = new google.maps.LatLng(lat, long);
+
+            gmarkers.push(marker);
+
+
+        }
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(map);
+            bounds.extend(gmarkers[i].getPosition());
+        }
+
+
+        if (gmarkers.length > 0) {
+            bounds.extend(loc);
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+        }
+
+        // coordinates = [
+        //     { lat: 7.100533680260062, lng: 125.61913590878247 },
+        //     { lat: 7.098613304015065, lng: 125.61098534613848 },
+        //     { lat: 7.085060317000033, lng: 125.61098534613848 }
+        //];
+
+        //alert(coordinates[0].lng);
+        //var map = new google.maps.Map(document.getElementById('map'), {
+        //    zoom: 18,
+        //    center: { lat: 7.100533680260062, lng: 125.61913590878247 }
+        //});
+
+        polyline = new google.maps.Polyline({
+            path: coordinates,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            clickable: true
+        });
+
+        polyline.setMap(map);
+
+        google.maps.event.addListener(polyline, 'click', function (event) {
+            var infoWindow = new google.maps.InfoWindow({
+                content: 'Segment group Wire length: \n' + google.maps.geometry.spherical.computeLength(polyline.getPath()).toFixed(2) + ' meters'
+            });
+
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        });
+
+
+    }
+
+
+    function ViewCUs(nodeId) {
+        //$('#divCuTrans').html('');
+        $('#divPhotos').html('');
+        $('#divMatTrans').html('');
+        $('#tblCuTransBody').html('');
+        htmls = "";
+
+        //Get CU
+        $.ajax({
+            url: "Home/GetCU",
+            type: "get",
+            async: "true",
+            data: { nodeId: nodeId },
+            success: function (data) {
+                if (data != null) {
+                    //htmls += '<table class="table table-bordered table-striped"><tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td></td></tr>';
+                    $.each(data, function (a, b) {
+                        //alert("here2: " + b.dtRemoved);
+                        if (b.dtRemoved == null) {
+                            htmls += '<tr><td>' + b.cuTransId + '</td><td style="width:250px;">' + b.cuId + '</td><td style="width:250px;">' + b.cuId.substring(0, (b.cuId.length - 2)) + '</td><td title="View Details" style="cursor:pointer; color: blue; width: 300px;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+
+                        }
+
+                    });
+                }
+
+                //htmls += "</table>";
+                $('#tblCuTransBody').append(htmls);
+            }
+        });
+
+
+    }
+
+
+    function ViewPhotos(cuTransId) {
+        //alert(cuTransId);
+        $('#divPhotos').html('<img src="Content/images/loadingenius.gif" width="100" height="100"/>');
+        $('#divMatTrans').html('');
+        var htmls2 = "";
+        //cuTransId
+        $.ajax({
+            url: "Home/GetPhotos",
+            type: "get",
+            data: { cuTransId: cuTransId },
+            success: function (data) {
+                if (data != null) {
+                    $('#divPhotos').html("");
+                    var cnt = 0;
+                    $.each(data, function (a, b) {
+                        cnt++;
+                        var base64image = b.file;
+                        if (base64image.length != 0) {
+                            var image = new Image();
+                            image.src = 'data:image/png;base64,' + base64image;
+                            image.width = 140;
+                            image.style = "cursor:pointer;";
+                            image.id = "myImg";
+
+
+                            //$('#imgTemp').attr('src','data:image/jpg;base64,' + base64image);
+                            $('#divPhotos').append(image);
+                            $('#divPhotos').append("<span>&nbsp;&nbsp;</span>");
+
+                            $(image).on("click", function () {
+                                //image.width = 400;
+                                $('#PhotoID').attr('src', image.src);
+                                $('#GeniusPhoto').modal('show');
+                            });
+                        }
+
+                    });
+
+                }
+            }
+        });
+
+        //GetMatTrans
+        $.ajax({
+            url: "Home/GetMatTransWithDescription", //GetMatTrans
+            type: "get",
+            data: { cuTransId: cuTransId },
+            success: function (data) {
+                if (data != null) {
+                    htmls2 = '<table class="table table-bordered table-striped"><tr><td>Cu TransID</td><td>Mat Id</td><td>Description</td><td>Actual Qty</td></tr>';
+                    $.each(data, function (a, b) {
+                        htmls2 += '<tr><td>' + b.matTran.cuTransId + '</td><td>' + b.matTran.matId + '</td><td>' + b.Description + '</td><td>' + b.matTran.actualQty + '</td><tr>';
+                    });
+                    htmls2 += '</table>'
+                }
+
+                $('#divMatTrans').html(htmls2);
+            }
+        });
+
+
+    }
+
+    function ViewThisNodesInMap(latlong) {
+
+        //var directionsDisplay = directionsDisplay;
+        //var map = map;
+        //alert(latlong);
+        ShowHideMarkerOneNode(directionsDisplay, map, latlong);
+    }
+
+    function viewNodeId(nodeId, tagname) {
+        $('#spnNode').text("Node: " + nodeId + "(" + tagname + ")");
+    }
+
+    $('#btnNodes').click(function () {
+
+        //alert("Nodes");
+        $('#lblNodesSegments').text('List of Nodes');
+        $('#tblListSegmentGroups').css('display', 'none');
+        $('#tblListNodes').css('display', 'block');
+
+    });
+
+    $('#btnSegmentGroup').click(function () {
+        //alert("Segments");
+        $('#lblNodesSegments').text('List of Segment Groups');
+        $('#tblListSegmentGroups').css('display', 'block');
+        $('#tblListNodes').css('display', 'none');
+
+    });
+
+
+    function ViewThisSegmentGroupInMap(sggId) {
+
+        //alert(sggId);
+
+        //var map = new google.maps.Map(document.getElementById('map'), {
+        //    zoom: 18,
+        //    center: { lat: 37.7749, lng: -122.4194 }
+        //});
+
+        //var coordinates = [
+        //    { lat: 37.7749, lng: -122.4194 },
+        //    { lat: 37.7752, lng: -122.4196 },
+        //    { lat: 37.7754, lng: -122.4198 },
+        //    { lat: 37.7756, lng: -122.4201 },
+        //    { lat: 37.7758, lng: -122.4204 },
+        //    { lat: 37.7760, lng: -122.4207 }
+        //];
+
+        //var polyline = new google.maps.Polyline({
+        //    path: coordinates,
+        //    strokeColor: '#FF0000',
+        //    strokeOpacity: 1.0,
+        //    strokeWeight: 2,
+        //    clickable: true
+        //});
+
+        //polyline.setMap(map);
+
+        //Get Segments
+        $('#tblCuTransBody').html('');
+        $('#divPhotos').html('');
+        $('#divMatTrans').html('');
+
+        var coordinates = [];
+        $.ajax({
+            url: 'Home/GetSegments',
+            type: 'get',
+            data: { SGG_ID: sggId },
+            success: function (data) {
+                //alert(data);
+
+                if (data != null) {
+                    $.each(data, function (a, b) {
+
+                        coordinates.push(b.segmentId + "," + b.nodeIdFrom + "," + b.nodeIdTo + "," + b.sagPercent + "," + b.NodeInfo[0].latitude + "," + b.NodeInfo[0].longitude);
+                        //alert(coordinates[0]);
+                    });
+
+                    //alert("COOR: " + coordinates);
+                    $('#divlogs').text(coordinates);
+                    ShowSegmentsBySegmentGroupId(directionsDisplay, map, coordinates, sggId);
+                }
+            }
+        });
+
+        //Get CU
+        var htmls = "";
+        $.ajax({
+            url: "Home/GetCU",
+            type: "get",
+            async: "true",
+            data: { nodeId: sggId },
+            success: function (data) {
+                if (data != null) {
+                    //htmls += '<table class="table table-bordered table-striped"><tr><td>Trans&nbsp;ID</td><td>Cu ID</td><td>Cu&nbsp;Number</td><td></td></tr>';
+                    $.each(data, function (a, b) {
+                        //alert("here1: " + b.dtRemoved);
+                        if (b.dtRemoved == null) {
+                            htmls += '<tr><td>' + b.cuTransId + '</td><td style="width:250px;">' + b.cuId + '</td><td style="width:250px;">' + b.cuId.substring(0, (b.cuId.length - 2)) + '</td><td title="View Details" style="cursor:pointer; color: blue; width: 300px;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+
+                        }
+
+
+                    });
+
+                    //viewNodeId(nodeIDarr[i], TempTagarr[i]);
+                }
+
+                //htmls += "</table>";
+                $('#tblCuTransBody').append(htmls);
+            }
+        });
+
+        
+
+      
+    }
+
+    $('.close').click(function () {
+        $('#GeniusPhoto').modal('hide');
+    });
+
+    $('#btnClosePhotoView').click(function () {
+        $('#GeniusPhoto').modal('hide');
+    });
+
+
+    $('#all-tab').click(function () {
+        //alert("all");
+        $('#tblListNodeBody').html('');
+        $('#tblListSegmentGroupBody').html('');
+        $('#tblCuTransBody').html('');
+        $('#divMatTrans').html('');
+    });
+
+
+    $('#non-metering-tab').click(function () {
+        //alert("non-metering");
+        $('#tblListNodeBody').html('');
+        $('#tblListSegmentGroupBody').html('');
+        $('#tblCuTransBody').html('');
+        $('#divMatTrans').html('');
+        
+    });
+
+    $('#metering-tab').click(function () {
+        //alert("metering");
+        $('#tblListNodeBody').html('');
+        $('#tblListSegmentGroupBody').html('');
+        $('#tblCuTransBody').html('');
+        $('#divMatTrans').html('');
+    });
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9ZZX8cFJfiBEYR1_MuLzYGhfE6907QM0&callback=initMap"></script>

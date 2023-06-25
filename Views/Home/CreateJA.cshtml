@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "CreateJA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>CreateJA</h4>
+<br />
+<div class="container-fluid">
+    <div class="row">
+        <table style="border-collapse: separate; border-spacing: 0 15px;">
+            <tr>
+                <td>JA Number: </td>
+                <td>&nbsp;</td>
+                <td><input type="text" placeholder="JA Number" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>No. of JA: </td>
+                <td>&nbsp;</td>
+                <td><input type="number" min="1" max="100" placeholder="No. of JA" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td colspan="2" style="text-align: right;"><input id="btnSaveJA" type="button" value="Create" class="btn btn-primary" /></td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div class="row" style="overflow: auto; border: dotted 1px gray; ">
+        <div style="height: 300px; border: dotted 1px gray; width:400px;">
+            <table style="width: 400px;" class="table table-bordered table-striped" id="tblJA">
+                <thead>
+                    <tr class="header"><th style="width: 40px;">Ja&nbsp;Id</th><th style="width: 40px;">Jo&nbsp;Number</th><th style="width: 320px;">Ja Number</th></tr>
+                </thead>
+                @{
+                    if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr style="cursor: pointer;"><td>@item.jaId</td><td>@item.joId</td><td style="width: 320px;">@item.jaNumber</td></tr>
+                        }
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+
+
+    $('#btnSaveJA').click(function () {
+        var jaNumber = $('#jaNumber').val();
+        var noOfJA = $('#noOfJA').val();
+
+        alert("Here!");
+
+        if (jaNumber == "") {
+            alert("Pls. Enter JA Number!");
+            return null;
+        }
+
+        if (noOfJA == "") {
+            alert("Pls. Enter No. of JA!");
+            return null;
+        }
+
+        $.ajax({
+            url: "/Home/SaveJA",
+            type: "Get",
+            data: { jaNumber: jaNumber, noOfJA: noOfJA },
+            success: function (data) {
+                if (data == "OK") {
+                    location.reload();
+                } else {
+                    alert("Duplicate Entry!");
+                }
+
+            }
+        });
+    });
+
+
+</script>

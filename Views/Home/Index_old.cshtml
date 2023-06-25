@@ -1,0 +1,520 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <br />
+    <div id="markers"></div>
+    <div class="col-md-3">
+        <h4>Job Order | Job Activity</h4>
+        @*<div>
+                <label>
+                    Search <input type="text" id="Search" onkeyup="myFunction()" placeholder="Search JO Number">
+                </label>
+            </div>*@
+        <div style="overflow: auto;">
+            @*<table style="width: 100%;" class="table table-bordered table-striped" id="tblJA">
+                    <thead>
+                        <tr class="header"><th>Ja Id</th><th>Jo Number</th><th>Ja Number</th></tr>
+                    </thead>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr style="cursor: pointer;"><td>@item.jaId</td><td>@item.joId</td><td>@item.jaNumber</td></tr>
+                            }
+                        }
+                    }
+                </table>*@
+            <select id="selectJA" onchange="getNodes(this.options[this.selectedIndex]);" style="overflow:auto; width:100%">
+                @{
+                    <option value="">Select combo</option>
+                    if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <option value="@item.jaId">@item.jaId | @item.joId | @item.jaNumber</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-9" style="justify-content:center">
+        <h4>Nodes</h4>
+        <div id="map" style="max-width: 850px; max-height: 400px; height: 400px; border: 1px solid #CCC;"> </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <h4>CU Transactions</h4>
+        <div style="overflow: auto; height: 500px; border: dotted 1px gray; font-size: 10px;">
+            <div id="divCuTrans"></div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-9">
+        <h4>Photos</h4>
+        <div id="divPhotos"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Mat Transactions</h4>
+        <div style="overflow: auto; height: 300px;">
+            <div id="divMatTrans"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+
+    var gmarkers = [];
+    var marker;
+
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });
+    });
+
+    function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: { lat: 10.527236, lng: 124.028277 }
+        });
+
+
+        directionsDisplay.setMap(map);
+
+        var geocoder = new google.maps.Geocoder;
+        var infowindow = new google.maps.InfoWindow;
+
+
+
+        //document.getElementById('submit').addEventListener('click', function () {
+        //    geocodeLatLng(geocoder, map, infowindow);
+        //});
+
+        //document.getElementById('btnPlot').addEventListener('click', function () {
+        //    //calculateAndDisplayRoute(directionsService, directionsDisplay, map);
+        //    PlotCoordinates(directionsService, directionsDisplay, map);
+        //});
+
+
+        //document.getElementById('btnRemoveMarker').addEventListener('click', function () {
+        //    //marker.setVisible(false); // visible_changed triggered
+        //    //marker.setMap(null);      // visible_changed not triggered
+
+        //    for (var i = 0; i < gmarkers.length; i++) {
+        //        gmarkers[i].setMap(null);
+        //    }
+
+        //    gmarkers = [];
+
+        //    directionsDisplay.setMap(null);
+
+        //    var summaryPanel = document.getElementById('directions-panel');
+        //    summaryPanel.innerHTML = '';
+
+        //    $("input[name='chkCoordinates']").prop('checked', false);
+
+
+
+
+        //});
+
+
+
+        //document.getElementById('btnAddMarker').addEventListener('click', function () {
+        //    var latlng = new google.maps.LatLng(10.354693, 123.920901);
+
+        //    marker = new google.maps.Marker({
+        //        position: latlng,
+        //        map: map
+        //    });
+
+
+
+        //    directionsDisplay.setMap(null);
+        //    marker.setVisible(true);  // visible_changed triggered
+
+
+        //});
+
+        setTimeout(function () {
+            // alert('page is loaded and 1 minute has passed');
+
+            var aTags = document.getElementsByClassName('chk');
+
+            for (var i = 0; i < aTags.length; i++) {
+                aTags[i].addEventListener('click', function () {
+                    //ShowHideMarker(directionsDisplay, map, latlong);
+                });
+            }
+
+            //PlotCoordinates(directionsService, directionsDisplay, map);
+            //ShowHideMarker(directionsDisplay, map, latlong);
+
+        }, 2000);
+    }
+
+    function getNodes(data) {
+
+        //alert(data.value);
+
+        var jaID = data.value.replace("Ja Id", "");
+
+        //alert(jaID);
+
+        var latlong = [];
+        var coor = "";
+
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: { lat: 10.527236, lng: 124.028277 }
+        });
+
+
+        directionsDisplay.setMap(map);
+
+        $.ajax({
+            //url: 'Home/GetNodes',
+            url: '/Home/GetNodes',
+            type: "get",
+            data: { jaID: jaID },
+            dataType: 'json',
+            success: function (data) {
+                //alert(JSON.stringify(data));
+                //alert(data[0].NodeId)
+                if (data != "") {
+                    $.each(data, function (a, b) {
+                        coor = b.NodeId + "," + b.TempNodeTag + "," + b.Latitude + "-" + b.Longitude;
+                        //alert(coor);
+                        latlong.push(coor);
+                    });
+
+                    //alert(coor);
+                    //alert(latlong.toString());
+                    //PlotCoordinates(directionsService, directionsDisplay, map, latlong)
+                    $('#divCuTrans').html('');
+                    $('#divPhotos').html('');
+                    $('#divMatTrans').html('');
+                    ShowHideMarker(directionsDisplay, map, latlong);
+                } else {
+                    //Clear MAP
+                    for (var i = 0; i < gmarkers.length; i++) {
+                        gmarkers[i].setMap(null);
+                    }
+
+                    setTimeout(function () { alert("No Available Nodes!"); }, 100);
+
+                }
+            }
+        });
+    }
+
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;;
+        input = document.getElementById("Search");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblJA");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the        search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    //function PlotCoordinates(directionsService, directionsDisplay, map, coor_arr) {
+
+    //    //var coor = [];
+    //    //$.each($("input[name='chkCoordinates']:checked"), function () {
+    //    //    coor.push($(this).val());
+    //    //});
+
+    //    //alert("Coordinates are: " + coor_arr.join(", "));
+
+    //    //alert(coor_arr);
+    //    for (var i = 0; i < gmarkers.length; i++) {
+    //        gmarkers[i].setMap(null);
+    //    }
+
+    //    gmarkers = [];
+    //    newLatLng = [];
+
+    //    var bounds;
+    //    var loc;
+
+    //    //alert(coor_arr.length);
+
+    //    for (var i = 0; i < coor_arr.length; i++) {
+    //        //var coortemp = coor_arr[i].split(',');
+    //        var coortemp = "Nodes";
+    //        var coordinates = coor_arr[i].split(',');
+    //        var long = coordinates[0];
+    //        var lat = coordinates[1];
+
+    //        //alert(lat + "=" + long);
+
+    //        var latlng = new google.maps.LatLng(lat, long);
+    //        directionsDisplay.setMap(null);
+
+    //        var markers = new google.maps.Marker({
+    //            position: latlng,
+    //            map: map,
+    //            title: coortemp[1] + " " + latlng.toString(),
+    //            icon: new google.maps.MarkerImage('/Content/images/mark_orange.png')
+    //        });
+
+    //        //bounds = new google.maps.LatLngBounds();
+    //        //loc = new google.maps.LatLng(lat, long);
+
+    //        gmarkers.push(markers);
+    //        newLatLng.push(lat + "," + long);
+
+    //        //alert(gmarkers.toString()   + " = " + newLatLng.toString());
+    //    }
+
+    //    //for (var i = 0; i < gmarkers.length; i++) {
+    //    //    gmarkers[i].setMap(map);
+    //    //    bounds.extend(gmarkers[i].getPosition());
+    //    //}
+
+
+    //    //bounds.extend(loc);
+
+    //    //map.fitBounds(bounds);
+    //    //map.panToBounds(bounds);
+
+    //    //alert(newLatLng[0]);
+    //    //alert(newLatLng[newLatLng.length - 1]);
+    //    var waypts = [];
+    //    var start = newLatLng[0];
+    //    var end = newLatLng[newLatLng.length - 1];
+    //    var checkboxArray = newLatLng;
+
+
+    //    for (var i = 0; i < checkboxArray.length; i++) {
+    //        //window.alert(checkboxArray[i]);
+    //        waypts.push({
+    //            location: checkboxArray[i],
+    //            stopover: true
+    //        });
+    //    }
+
+    //    directionsDisplay.setMap(map);
+
+    //    //directionsService.route({
+    //    //    origin: start,
+    //    //    destination: end,
+    //    //    waypoints: waypts,
+    //    //    optimizeWaypoints: true,
+    //    //    travelMode: 'DRIVING'
+    //    //}, function (response, status) {
+    //    //    if (status === 'OK') {
+
+    //    //        directionsDisplay.setDirections(response);
+
+    //    //        //map.setZoom(11);
+    //    //        var route = response.routes[0];
+    //    //        var summaryPanel = document.getElementById('directions-panel');
+    //    //        summaryPanel.innerHTML = '';
+    //    //        // For each route, display summary information.
+    //    //        for (var i = 0; i < route.legs.length; i++) {
+    //    //            var routeSegment = i + 1;
+    //    //            summaryPanel.innerHTML += '<b>Pole: ' + routeSegment + '</b><br>';
+    //    //            summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+    //    //            summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+    //    //            summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+
+    //    //        }
+    //    //    } else {
+    //    //        window.alert('Directions request failed due to ' + status);
+    //    //    }
+    //    //});
+    //}
+
+    function ShowHideMarker(display, map, coor_arr) {
+
+        var markers = new Array();
+        var htmls = "";
+
+
+
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(null);
+        }
+
+        gmarkers = [];
+
+        var bounds;
+        var loc;
+        var infowindow = new google.maps.InfoWindow();
+        var nodeIDarr = [];
+        var TempTagarr = [];
+        var latlong = [];
+
+        for (var i = 0; i < coor_arr.length; i++) {
+            var coortemp = coor_arr[i].split(',');
+            var coordinates = coortemp[2].split('-');
+            var lat = coordinates[0];
+            var long = coordinates[1];
+
+            var latlng = new google.maps.LatLng(lat, long);
+
+            nodeIDarr.push(coortemp[0]);
+            TempTagarr.push(coortemp[1]);
+            latlong.push(latlng.toString());
+            //$('#markers').append('<a class="marker-link" data-markerid="' + i + '" href="#">Test-' + i + '</a> ');
+            //directionsDisplay.setMap(null);
+
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: coortemp[0] + "\n" + coortemp[1] + "\n" + latlng.toString(),
+                icon: new google.maps.MarkerImage('/Content/images/mark_orange.png')
+            });
+
+
+
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+                return function () {
+
+
+                    infowindow.setContent(nodeIDarr[i] + "<br/>" + TempTagarr[i] + "<br/>" + latlong[i]);
+                    infowindow.open(map, marker);
+
+                    $('#divCuTrans').html('');
+                    $('#divPhotos').html('');
+                    $('#divMatTrans').html('');
+                    htmls = "";
+
+
+
+                    //Get CU
+                    $.ajax({
+                        url: "Home/GetCU",
+                        type: "get",
+                        async: "true",
+                        data: { nodeId: nodeIDarr[i] },
+                        success: function (data) {
+                            if (data != null) {
+                                htmls += '<table class="table table-bordered table-striped"><tr><td>Trans ID</td><td>Cu ID</td><td></td></tr>';
+                                $.each(data, function (a, b) {
+                                    htmls += '<tr><td>' + b.cuTransId + '</td><td>' + b.cuId + '</td><td title="View Captured Photos" style="cursor:pointer; color: blue;" onclick="ViewPhotos(' + b.cuTransId + ');">View Details</td></tr>';
+                                });
+                            }
+
+                            htmls += "</table>";
+                            $('#divCuTrans').html(htmls);
+                        }
+                    });
+
+                }
+
+            })(marker, i));
+            markers.push(marker);
+
+
+            bounds = new google.maps.LatLngBounds();
+            loc = new google.maps.LatLng(lat, long);
+
+            gmarkers.push(marker);
+        }
+
+        for (var i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(map);
+            bounds.extend(gmarkers[i].getPosition());
+        }
+
+
+        if (gmarkers.length > 0) {
+            bounds.extend(loc);
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+        }
+
+    }
+
+    function ViewPhotos(cuTransId) {
+        //alert(cuTransId);
+        $('#divPhotos').html('');
+        $('#divMatTrans').html('');
+        var htmls2 = "";
+        //cuTransId
+        $.ajax({
+            url: "Home/GetPhotos",
+            type: "get",
+            data: { cuTransId: cuTransId },
+            success: function (data) {
+                if (data != null) {
+                    $.each(data, function (a, b) {
+                        var base64image = b.file;
+                        if (base64image.length != 0) {
+                            var image = new Image();
+                            image.src = 'data:image/png;base64,' + base64image;
+                            //$('#imgTemp').attr('src','data:image/jpg;base64,' + base64image);
+                            $('#divPhotos').append(image);
+                            $('#divPhotos').append("<span>&nbsp;&nbsp;</span>");
+                        }
+
+                    });
+
+                }
+            }
+        });
+
+        //Get CU
+        $.ajax({
+            url: "Home/GetMatTransWithDescription", //GetMatTrans
+            type: "get",
+            data: { cuTransId: cuTransId },
+            success: function (data) {
+                if (data != null) {
+                    htmls2 = '<table class="table table-bordered table-striped"><tr><td>Cu TransID</td><td>Mat Id</td><td>Description</td><td>Actual Qty</td></tr>';
+                    $.each(data, function (a, b) {
+                        htmls2 += '<tr><td>' + b.matTran.cuTransId + '</td><td>' + b.matTran.matId + '</td><td>' + b.Description + '</td><td>' + b.matTran.actualQty + '</td><tr>';
+                    });
+                    htmls2 += '</table>'
+                }
+
+                $('#divMatTrans').html(htmls2);
+            }
+        });
+    }
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9ZZX8cFJfiBEYR1_MuLzYGhfE6907QM0&callback=initMap"></script>
